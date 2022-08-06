@@ -1,0 +1,4 @@
+FROM supplantr/python-toolbox
+
+RUN dnf install -y hidapi
+RUN pip install hid
