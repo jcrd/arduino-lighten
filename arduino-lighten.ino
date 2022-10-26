@@ -43,7 +43,7 @@ void setup(void)
 int sense(void)
 {
   if (sensor == 0)
-    return -1;
+    return -1.0;
 
   sensors_event_t ev;
   tsl.getEvent(&ev);
@@ -55,19 +55,20 @@ int sense(void)
     /* If event.light = 0 lux the sensor is probably saturated */
     /* and no reliable data could be generated! */
     /* if event.light is +/- 4294967040 there was a float over/underflow */
-    return -2;
+    return -2.0;
   }
 
-  return (int)(ev.light + 0.5);
+  return ev.light;
 }
 
 uint16_t get_report(uint8_t report_id, hid_report_type_t report_type,
                     uint8_t *buffer, uint16_t reqlen)
 {
-  uint16_t size = snprintf(char_buf, REPORT_SIZE, "%d", sense());
-  for (int i = 0; i < size; i++)
+  dtostrf(sense(), 0, 0, char_buf);
+  int i = 0;
+  for (; i < REPORT_SIZE && char_buf[i] != '\0'; i++)
     buffer[i] = (uint8_t)char_buf[i];
-  return size;
+  return i;
 }
 
 void loop(void)
