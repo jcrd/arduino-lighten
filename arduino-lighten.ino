@@ -40,7 +40,7 @@ void setup(void)
     delay(1);
 }
 
-int sense(void)
+float sense(void)
 {
   if (sensor == 0)
     return -1.0;
